@@ -1,0 +1,217 @@
+import React, { useReducer, useState} from "react";
+
+const initialState = [
+  {
+    "userId": 1,
+    "id": 1,
+    "title": "delectus aut autem",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 2,
+    "title": "quis ut nam facilis et officia qui",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 3,
+    "title": "fugiat veniam minus",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 4,
+    "title": "et porro tempora",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 5,
+    "title": "laboriosam mollitia et enim quasi adipisci quia provident illum",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 6,
+    "title": "qui ullam ratione quibusdam voluptatem quia omnis",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 7,
+    "title": "illo expedita consequatur quia in",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 8,
+    "title": "quo adipisci enim quam ut ab",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 9,
+    "title": "molestiae perspiciatis ipsa",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 10,
+    "title": "illo est ratione doloremque quia maiores aut",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 11,
+    "title": "vero rerum temporibus dolor",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 12,
+    "title": "ipsa repellendus fugit nisi",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 13,
+    "title": "et doloremque nulla",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 14,
+    "title": "repellendus sunt dolores architecto voluptatum",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 15,
+    "title": "ab voluptatum amet voluptas",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 16,
+    "title": "accusamus eos facilis sint et aut voluptatem",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 17,
+    "title": "quo laboriosam deleniti aut qui",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 18,
+    "title": "dolorum est consequatur ea mollitia in culpa",
+    "completed": false
+  },
+  {
+    "userId": 1,
+    "id": 19,
+    "title": "molestiae ipsa aut voluptatibus pariatur dolor nihil",
+    "completed": true
+  },
+  {
+    "userId": 1,
+    "id": 20,
+    "title": "ullam nobis libero sapiente ad optio sint",
+    "completed": true
+  }
+];
+
+function todosReducer(state, action) {
+  switch (action.type) {
+    case "added":
+      return [...state, { id: Date.now(), title: action.title, completed: false }];
+    case "toggled":
+      return state.map((todo) =>
+        todo.id === action.id ? { ...todo, completed: !todo.completed } : todo
+      );
+    case "deleted":
+      return state.filter((todo) => todo.id !== action.id);
+    default:
+      throw new Error(`Unknown action: ${action.type}`);
+  }
+}
+
+function TodoList(){
+    const [todos, dispatch] = useReducer(todosReducer, initialState);
+    const [title, setText] = useState('');
+
+    const handleAdd = () => {
+        if (!title.trim()) return;
+        dispatch({type: "added", title});
+        setText('');
+    };
+
+    const handleCompleted = (todo) => {
+        dispatch({ type: "toggled", id: todo.id });
+    };
+
+    const handleDelete = (todo) => {
+        dispatch({ type: "deleted", id: todo.id });
+    };
+
+    const handleEdit = (todo) => {
+        dispatch({ type: "edit", id: todo.id });
+    };
+
+    return(
+        <>
+            <h1>Create Todo List</h1>
+            <form>
+                <input
+                    value={title}
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+                    placeholder="Add a todo..."
+                />
+                <button onClick={handleAdd}>Add</button>
+            </form>
+            <div>
+                <ul>
+                    {todos.map((todo) => (
+                    <li key={todo.id}>
+                        <input
+                            type="checkbox"
+                            checked={todo.completed}
+                            onChange={handleCompleted(todo)}
+                        />
+                        <span>{todo.title}</span>
+                        <button onClick={handleEdit(todo)}>Edit</button>
+                        <button onClick={handleDelete(todo)}>Delete</button>
+                    </li>
+                    ))}
+                </ul>
+                <p>{todos.filter((t) => !t.completed).length} of {todos.length} remaining</p>
+            </div>
+        </>
+    );
+}
+
+export default TodoList;
+
+{/* <div>
+    <ul id="myUL">
+        <!-- Example list items (these would typically be added dynamically with JavaScript) -->
+        
+        <input type="checkbox" defaultChecked={false} />
+        <li>Hit the gym</li>
+        <li class="checked">Pay bills</li>
+        <li>Meet George</li>
+        <button type="submit" className="add-btn" aria-label="Add task">
+            Edit
+        </button>
+        <button type="submit" className="add-btn" aria-label="Add task">
+            Remove
+        </button>
+        <button type="submit" className="add-btn" aria-label="Add task">
+            Save
+        </button>
+
+    </ul>
+</div> */}
