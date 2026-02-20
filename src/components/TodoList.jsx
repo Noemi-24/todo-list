@@ -208,3 +208,64 @@ export default TodoList;
 
     </ul>
 </div> */}
+
+// import React, { useReducer } from 'react';
+
+// // 1. Reducer to manage tasks and editing state
+// const taskReducer = (state, action) => {
+//   switch (action.type) {
+//     case 'START_EDIT':
+//       return { ...state, editingTaskId: action.payload };
+//     case 'SAVE_TASK':
+//       return {
+//         ...state,
+//         tasks: state.tasks.map(task => 
+//           task.id === action.payload.id ? { ...task, text: action.payload.newText } : task
+//         ),
+//         editingTaskId: null, // Exit editing mode
+//       };
+//     default:
+//       return state;
+//   }
+// };
+
+// const TaskList = () => {
+//   const [state, dispatch] = useReducer(taskReducer, { 
+//     tasks: [{ id: 1, text: 'Sample Task' }], 
+//     editingTaskId: null 
+//   });
+
+//   return (
+//     <div>
+//       {state.tasks.map(task => (
+//         <div key={task.id}>
+//           {/* Toggle between input and text based on editing state */}
+//           {state.editingTaskId === task.id ? (
+//             <input defaultValue={task.text} id={`input-${task.id}`} />
+//           ) : (
+//             <span>{task.text}</span>
+//           )}
+
+//           {/* 3. Conditional Button Rendering */}
+//           {state.editingTaskId === task.id ? (
+//             <button onClick={() => dispatch({ 
+//               type: 'SAVE_TASK', 
+//               payload: { id: task.id, newText: document.getElementById(`input-${task.id}`).value } 
+//             })}>
+//               Save
+//             </button>
+//           ) : (
+//             <>
+//               <button onClick={() => dispatch({ type: 'START_EDIT', payload: task.id })}>
+//                 Edit
+//               </button>
+//               <button>Delete</button>
+//             </>
+//           )}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default TaskList;
