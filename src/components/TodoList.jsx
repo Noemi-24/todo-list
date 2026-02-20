@@ -269,3 +269,67 @@ export default TodoList;
 // };
 
 // export default TaskList;
+
+
+
+// import React, { useReducer, useState } from 'react';
+
+// // 1. Define the initial state
+// const initialState = {
+//   tasks: [] // The array to hold tasks
+// };
+
+// // 2. Define the reducer function
+// function reducer(state, action) {
+//   switch (action.type) {
+//     case 'ADD_TASK':
+//       // Return a new state object with an updated tasks array
+//       return {
+//         ...state, // Spread other state properties if they exist
+//         // Create a new array using the spread syntax to add the new task
+//         tasks: [...state.tasks, action.payload]
+//       };
+//     // Other cases for delete, update, etc.
+//     default:
+//       return state;
+//   }
+// }
+
+// // 3. Create the component
+// function TaskApp() {
+//   const [state, dispatch] = useReducer(reducer, initialState);
+//   const [taskText, setTaskText] = useState('');
+
+//   const handleAddTask = () => {
+//     if (taskText.trim() === '') return;
+//     const newTask = {
+//       id: Date.now(), // Simple unique ID
+//       text: taskText,
+//       isCompleted: false
+//     };
+    
+//     // Dispatch the 'ADD_TASK' action with the new task as the payload
+//     dispatch({ type: 'ADD_TASK', payload: newTask });
+//     setTaskText(''); // Clear the input field
+//   };
+
+//   return (
+//     <div>
+//       <input
+//         type="text"
+//         value={taskText}
+//         onChange={(e) => setTaskText(e.target.value)}
+//         placeholder="Enter a new task"
+//       />
+//       <button onClick={handleAddTask}>Add Task</button>
+      
+//       <ul>
+//         {state.tasks.map(task => (
+//           <li key={task.id}>{task.text}</li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
+// export default TaskApp;
