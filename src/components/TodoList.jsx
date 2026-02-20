@@ -129,10 +129,10 @@ function todosReducer(state, action) {
       return [...state, { id: Date.now(), title: action.title, completed: false }];
     case "toggled":
       return state.map((todo) =>
-        todo.id === action.id ? { ...todo, completed: !todo.completed } : todo
+        todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
       );
     case "deleted":
-      return state.filter((todo) => todo.id !== action.id);
+      return state.filter((todo) => todo.id !== action.payload);
     default:
       throw new Error(`Unknown action: ${action.type}`);
   }
@@ -146,18 +146,6 @@ function TodoList(){
         if (!title.trim()) return;
         dispatch({type: "added", title});
         setText('');
-    };
-
-    const handleCompleted = (todo) => {
-        dispatch({ type: "toggled", id: todo.id });
-    };
-
-    const handleDelete = (todo) => {
-        dispatch({ type: "deleted", id: todo.id });
-    };
-
-    const handleEdit = (todo) => {
-        dispatch({ type: "edit", id: todo.id });
     };
 
     return(
@@ -179,11 +167,16 @@ function TodoList(){
                         <input
                             type="checkbox"
                             checked={todo.completed}
-                            onChange={handleCompleted(todo)}
+                            onChange={() => dispatch({ type: "toggled", id: todo.id })}
                         />
                         <span>{todo.title}</span>
-                        <button onClick={handleEdit(todo)}>Edit</button>
-                        <button onClick={handleDelete(todo)}>Delete</button>
+                        <button onClick={() => dispatch({ type: "edited", id: todo.id })}>Edit</button>
+                        <button 
+                            onClick={() => dispatch({ type: "deleted", payload: todo.id })}
+                            disabled={!todo.completed}
+                        >
+                            Delete
+                        </button>
                     </li>
                     ))}
                 </ul>
