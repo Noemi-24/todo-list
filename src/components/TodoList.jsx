@@ -167,7 +167,7 @@ function TodoList(){
                         <input
                             type="checkbox"
                             checked={todo.completed}
-                            onChange={() => dispatch({ type: "toggled", id: todo.id })}
+                            onChange={() => dispatch({ type: "toggled", payload: todo.id })}
                         />
                         <span>{todo.title}</span>
                         <button onClick={() => dispatch({ type: "edited", id: todo.id })}>Edit</button>
