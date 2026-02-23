@@ -1,4 +1,5 @@
 import React, { useReducer, useState} from "react";
+import './TodoList.css'
 
 const initialState = [
   {
@@ -164,55 +165,68 @@ function TodoList(){
 
     return(
         <>
-            <h1>Create Todo List</h1>
-            <form onSubmit={handleAdd}>
+            <h1 className="open-sans-title">Create Todo List</h1>
+            <form onSubmit={handleAdd} className="roboto-flex-body">
                 <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Add a todo..."
+                    className="open-sans-input"
                 />
-                <button type="submit">Add</button>
+                <button type="submit" className="open-sans-button btn-add">Add</button>
             </form>
-            <div>
+            <div className="open-sans-list">
                 <ul>
                     {todos.map((todo) => (
                     <li key={todo.id}>
+                      <div className="first-row">
                         <input
                               type="checkbox"
                               checked={todo.completed}
                               onChange={() => dispatch({ type: "toggled", payload: todo.id })}
+                              className="checkbox"
                           />
                         {editingTodoId ===  todo.id ? (
                           <input
                               value={editingTitle}
                               onChange={(e) => setEditingTitle(e.target.value)}
+                              className="open-sans-input"
                           />
                         ): (
                           <span>{todo.title}</span>
                         )}                  
-                        
+                      </div>  
                         {editingTodoId === todo.id ? (
-                          <>
+                          <div className="second-row">
                             <button onClick={() => {dispatch({ 
                               type: 'saved', 
                               payload: { id: todo.id, newTitle: editingTitle } 
-                            }); setEditingTodoId(null); setEditingTitle('')}}>
+                              }); setEditingTodoId(null); setEditingTitle('')}}
+                              className="open-sans-button btn-save btn"
+                            >
                               Save
                             </button>
-                            <button onClick={() => {setEditingTodoId(null); setEditingTitle('')}}>
+                            <button onClick={() => {setEditingTodoId(null); setEditingTitle('')}}
+                              className="open-sans-button btn-cancel btn"
+                            >
                               Cancel
                             </button>
-                          </>
+                          </div>
                         ):(
-                          <>
-                            <button onClick={() => {setEditingTodoId(todo.id); setEditingTitle(todo.title)}}>Edit</button>
-                            <button 
-                                onClick={() => dispatch({ type: "deleted", payload: todo.id })}
-                                disabled={!todo.completed}
+                          <div className="second-row">
+                            <button onClick={() => {setEditingTodoId(todo.id); setEditingTitle(todo.title)}}
+                              className="open-sans-button btn-edit btn"
                             >
-                                Delete
+                              Edit
                             </button>
-                          </>
+                            <button 
+                              onClick={() => dispatch({ type: "deleted", payload: todo.id })}
+                              disabled={!todo.completed}
+                              className="open-sans-button btn-delete btn"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         )}
                         
                     </li>
