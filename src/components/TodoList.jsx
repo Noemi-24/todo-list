@@ -126,7 +126,7 @@ const initialState = [
 function todosReducer(state, action) {
   switch (action.type) {
     case "added":
-      return [...state, { id: Date.now(), title: action.title, completed: false }];
+      return [...state, action.payload];
     case "toggled":
       return state.map((todo) =>
         todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
@@ -140,25 +140,33 @@ function todosReducer(state, action) {
 
 function TodoList(){
     const [todos, dispatch] = useReducer(todosReducer, initialState);
-    const [title, setText] = useState('');
+    const [title, setTitle] = useState('');
 
-    const handleAdd = () => {
+    const handleAdd = (e) => {
+        e.preventDefault();
         if (!title.trim()) return;
-        dispatch({type: "added", title});
-        setText('');
+
+        const newTodo = {
+          id: Date.now(),
+          title: title,
+          completed: false,
+        };
+
+        dispatch({type: "added", payload: newTodo});
+        setTitle('');
     };
 
     return(
         <>
             <h1>Create Todo List</h1>
-            <form>
+            <form onSubmit={handleAdd}>
                 <input
                     value={title}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => setTitle(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleAdd()}
                     placeholder="Add a todo..."
                 />
-                <button onClick={handleAdd}>Add</button>
+                <button type="submit">Add</button>
             </form>
             <div>
                 <ul>
@@ -188,26 +196,6 @@ function TodoList(){
 
 export default TodoList;
 
-{/* <div>
-    <ul id="myUL">
-        <!-- Example list items (these would typically be added dynamically with JavaScript) -->
-        
-        <input type="checkbox" defaultChecked={false} />
-        <li>Hit the gym</li>
-        <li class="checked">Pay bills</li>
-        <li>Meet George</li>
-        <button type="submit" className="add-btn" aria-label="Add task">
-            Edit
-        </button>
-        <button type="submit" className="add-btn" aria-label="Add task">
-            Remove
-        </button>
-        <button type="submit" className="add-btn" aria-label="Add task">
-            Save
-        </button>
-
-    </ul>
-</div> */}
 
 // import React, { useReducer } from 'react';
 
@@ -272,64 +260,3 @@ export default TodoList;
 
 
 
-// import React, { useReducer, useState } from 'react';
-
-// // 1. Define the initial state
-// const initialState = {
-//   tasks: [] // The array to hold tasks
-// };
-
-// // 2. Define the reducer function
-// function reducer(state, action) {
-//   switch (action.type) {
-//     case 'ADD_TASK':
-//       // Return a new state object with an updated tasks array
-//       return {
-//         ...state, // Spread other state properties if they exist
-//         // Create a new array using the spread syntax to add the new task
-//         tasks: [...state.tasks, action.payload]
-//       };
-//     // Other cases for delete, update, etc.
-//     default:
-//       return state;
-//   }
-// }
-
-// // 3. Create the component
-// function TaskApp() {
-//   const [state, dispatch] = useReducer(reducer, initialState);
-//   const [taskText, setTaskText] = useState('');
-
-//   const handleAddTask = () => {
-//     if (taskText.trim() === '') return;
-//     const newTask = {
-//       id: Date.now(), // Simple unique ID
-//       text: taskText,
-//       isCompleted: false
-//     };
-    
-//     // Dispatch the 'ADD_TASK' action with the new task as the payload
-//     dispatch({ type: 'ADD_TASK', payload: newTask });
-//     setTaskText(''); // Clear the input field
-//   };
-
-//   return (
-//     <div>
-//       <input
-//         type="text"
-//         value={taskText}
-//         onChange={(e) => setTaskText(e.target.value)}
-//         placeholder="Enter a new task"
-//       />
-//       <button onClick={handleAddTask}>Add Task</button>
-      
-//       <ul>
-//         {state.tasks.map(task => (
-//           <li key={task.id}>{task.text}</li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-
-// export default TaskApp;
