@@ -126,13 +126,17 @@ const initialState = [
 function todosReducer(state, action) {
   switch (action.type) {
     case "added":
-      return [...state, action.payload];
+      return [action.payload, ...state]; //Shows newtodo first then array of todos
     case "toggled":
       return state.map((todo) =>
         todo.id === action.payload ? { ...todo, completed: !todo.completed } : todo
       );
     case "deleted":
       return state.filter((todo) => todo.id !== action.payload);
+    case 'saved':
+      return state.map(todo => 
+          todo.id === action.payload.id ? { ...todo, title: action.payload.newTitle } : todo
+        );
     default:
       throw new Error(`Unknown action: ${action.type}`);
   }
@@ -141,6 +145,8 @@ function todosReducer(state, action) {
 function TodoList(){
     const [todos, dispatch] = useReducer(todosReducer, initialState);
     const [title, setTitle] = useState('');
+    const [editingTodoId, setEditingTodoId] = useState(null);
+    const [editingTitle, setEditingTitle] = useState('')
 
     const handleAdd = (e) => {
         e.preventDefault();
@@ -163,7 +169,6 @@ function TodoList(){
                 <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleAdd()}
                     placeholder="Add a todo..."
                 />
                 <button type="submit">Add</button>
@@ -173,18 +178,43 @@ function TodoList(){
                     {todos.map((todo) => (
                     <li key={todo.id}>
                         <input
-                            type="checkbox"
-                            checked={todo.completed}
-                            onChange={() => dispatch({ type: "toggled", payload: todo.id })}
-                        />
-                        <span>{todo.title}</span>
-                        <button onClick={() => dispatch({ type: "edited", id: todo.id })}>Edit</button>
-                        <button 
-                            onClick={() => dispatch({ type: "deleted", payload: todo.id })}
-                            disabled={!todo.completed}
-                        >
-                            Delete
-                        </button>
+                              type="checkbox"
+                              checked={todo.completed}
+                              onChange={() => dispatch({ type: "toggled", payload: todo.id })}
+                          />
+                        {editingTodoId ===  todo.id ? (
+                          <input
+                              value={editingTitle}
+                              onChange={(e) => setEditingTitle(e.target.value)}
+                          />
+                        ): (
+                          <span>{todo.title}</span>
+                        )}                  
+                        
+                        {editingTodoId === todo.id ? (
+                          <>
+                            <button onClick={() => {dispatch({ 
+                              type: 'saved', 
+                              payload: { id: todo.id, newTitle: editingTitle } 
+                            }); setEditingTodoId(null); setEditingTitle('')}}>
+                              Save
+                            </button>
+                            <button onClick={() => {setEditingTodoId(null); setEditingTitle('')}}>
+                              Cancel
+                            </button>
+                          </>
+                        ):(
+                          <>
+                            <button onClick={() => {setEditingTodoId(todo.id); setEditingTitle(todo.title)}}>Edit</button>
+                            <button 
+                                onClick={() => dispatch({ type: "deleted", payload: todo.id })}
+                                disabled={!todo.completed}
+                            >
+                                Delete
+                            </button>
+                          </>
+                        )}
+                        
                     </li>
                     ))}
                 </ul>
@@ -196,67 +226,6 @@ function TodoList(){
 
 export default TodoList;
 
-
-// import React, { useReducer } from 'react';
-
-// // 1. Reducer to manage tasks and editing state
-// const taskReducer = (state, action) => {
-//   switch (action.type) {
-//     case 'START_EDIT':
-//       return { ...state, editingTaskId: action.payload };
-//     case 'SAVE_TASK':
-//       return {
-//         ...state,
-//         tasks: state.tasks.map(task => 
-//           task.id === action.payload.id ? { ...task, text: action.payload.newText } : task
-//         ),
-//         editingTaskId: null, // Exit editing mode
-//       };
-//     default:
-//       return state;
-//   }
-// };
-
-// const TaskList = () => {
-//   const [state, dispatch] = useReducer(taskReducer, { 
-//     tasks: [{ id: 1, text: 'Sample Task' }], 
-//     editingTaskId: null 
-//   });
-
-//   return (
-//     <div>
-//       {state.tasks.map(task => (
-//         <div key={task.id}>
-//           {/* Toggle between input and text based on editing state */}
-//           {state.editingTaskId === task.id ? (
-//             <input defaultValue={task.text} id={`input-${task.id}`} />
-//           ) : (
-//             <span>{task.text}</span>
-//           )}
-
-//           {/* 3. Conditional Button Rendering */}
-//           {state.editingTaskId === task.id ? (
-//             <button onClick={() => dispatch({ 
-//               type: 'SAVE_TASK', 
-//               payload: { id: task.id, newText: document.getElementById(`input-${task.id}`).value } 
-//             })}>
-//               Save
-//             </button>
-//           ) : (
-//             <>
-//               <button onClick={() => dispatch({ type: 'START_EDIT', payload: task.id })}>
-//                 Edit
-//               </button>
-//               <button>Delete</button>
-//             </>
-//           )}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default TaskList;
 
 
 
